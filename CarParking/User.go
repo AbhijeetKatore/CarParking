@@ -22,17 +22,13 @@ func AddUser() {
 	client,ctx = ConnectDatabase()
 	collection := client.Database("CarParking").Collection("Users")
 	doc := bson.D{{"First Name", fName}, {"Last Name", lName}}
-	result, err := collection.InsertOne(ctx, doc)
+	_, err := collection.InsertOne(ctx, doc)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Inserted document with _id: %v\n", result.InsertedID)
+	fmt.Printf("User Details Inserted Successfully")
 
-	// databases, err := client.ListDatabaseNames(ctx, bson.M{})
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// fmt.Println(databases)
+
 }
 func Deleteuser() {
 
