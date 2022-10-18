@@ -18,6 +18,7 @@ func main(){
 
  `)
 
+
  var selector int8
  fmt.Scanln(&selector)
  switch selector{
