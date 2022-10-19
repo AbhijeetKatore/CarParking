@@ -25,8 +25,8 @@ func AddUser() {
 	var ctx context.Context
 	client,ctx = ConnectDatabase()
 	collection := client.Database("CarParking").Collection("Users")
-	doc := bson.D{{"First Name", fName}, {"Last Name", lName},{"Age", age}}
-	_, err := collection.InsertOne(ctx, doc)
+	data := bson.D{{"First Name", fName}, {"Last Name", lName},{"Age", age}}
+	_, err := collection.InsertOne(ctx, data)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -46,7 +46,8 @@ func Deleteuser() {
 	var ctx context.Context
 	client,ctx = ConnectDatabase()
 	collection := client.Database("CarParking").Collection("Users")
-	result, err := collection.DeleteMany(ctx, bson.D{{"First Name", fName}, {"Last Name", lName},{"Age", age}})
+	data :=bson.D{{"First Name", fName}, {"Last Name", lName},{"Age", age}}
+	result, err := collection.DeleteMany(ctx, data)
 	if err != nil {
     	log.Fatal(err)
 	}
