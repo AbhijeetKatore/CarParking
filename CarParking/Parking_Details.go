@@ -105,7 +105,7 @@ func UpdateParkingSlot() {
 			}
 		}
 
-		var client *mongo.Client 
+	var client *mongo.Client 
 	var ctx context.Context
 	client,ctx = ConnectDatabase()
 	collection := client.Database("CarParking").Collection("ParkingSlots")
@@ -124,7 +124,23 @@ func UpdateParkingSlot() {
 }
 
 func GetFreeParkingSlots(){
+	var client *mongo.Client 
+	var ctx context.Context
+	client,ctx = ConnectDatabase()
+	collection := client.Database("CarParking").Collection("ParkingSlots")
 
+	cursor, err := collection.Find(ctx, bson.M{"Occupancy":true})
+	if err != nil {
+   		log.Fatal(err)
+	}
+	defer cursor.Close(ctx)
+	for cursor.Next(ctx) {
+   		var episode bson.M
+    	if err = cursor.Decode(&episode); err != nil {
+        	log.Fatal(err)
+    	}
+    	fmt.Println(episode)
+	}
 }
 func AddNewCarToSlot() {
 
