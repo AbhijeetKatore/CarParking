@@ -27,6 +27,11 @@ func main(){
  case 3 : CarParking.AddCarDetails()
  case 4: CarParking.DeleteCarDetails()
  case 5: CarParking.UpdateCarDetails()
+ case 6: CarParking.AddParkingSlots()
+ case 7: CarParking.DeleteCarDetails()
+ case 8: CarParking.GetFreeParkingSlots()
+ case 9: CarParking.AddNewCarToSlot()
+ 
  default : fmt.Println("Selct proper input from the above list")
  }
  
