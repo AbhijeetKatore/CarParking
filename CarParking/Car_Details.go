@@ -82,8 +82,7 @@ func UpdateCarDetails(){
 	collection := client.Database("CarParking").Collection("CarDetails")
 	prevData :=bson.D{{"Car Number", oldCarNumber}, {"Car Model Name", oldCarModel}}
 	newData:=bson.D{{"$set",bson.D{{"Car Number", newCarNumber}, {"Car Model Name", newCarModel}}},}
-	result, err := collection.UpdateMany(
-		ctx,prevData,newData)
+	result, err := collection.UpdateMany(ctx,prevData,newData)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -93,4 +92,3 @@ func UpdateCarDetails(){
 	fmt.Printf("New Car Details Updated Succesfully")
 
 }
-

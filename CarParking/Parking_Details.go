@@ -73,10 +73,59 @@ func DeleteParkingSlots() {
 
 }
 
-func GetFreeParkingSlots() {
+func UpdateParkingSlot() {
+	var oldFloorNumber int8
+	var oldSlotNumber int8
+	fmt.Println("Enter Old Parking Slot Details")
+	fmt.Println("Enter Exact Floor Number")
+	fmt.Scan(&oldFloorNumber)
+	fmt.Println("Enter Exact Unique Slot Number")
+	fmt.Scan(&oldSlotNumber)
+
+	var newFloorNumber int8
+	var newSlotNumber int8
+	var newOccupancy string
+	var newOccupancyFlag bool
+	fmt.Println("Enter New Parking Slot Details")
+	fmt.Println("Enter Floor Number")
+	fmt.Scan(&newFloorNumber)
+	fmt.Println("Enter Unique Slot Number")
+	fmt.Scan(&newSlotNumber)
+		for{
+			fmt.Println("Enter Occupancy As true or false Only")
+			fmt.Scan(&newOccupancy)
+			if  newOccupancy == "true" ||  newOccupancy == "false"{
+				if newOccupancy == "true" {
+					newOccupancyFlag=true
+				}
+				if newOccupancy == "false"{
+					newOccupancyFlag=false
+				}
+				break
+			}
+		}
+
+		var client *mongo.Client 
+	var ctx context.Context
+	client,ctx = ConnectDatabase()
+	collection := client.Database("CarParking").Collection("ParkingSlots")
+	prevData :=bson.D{{"Floor Number", oldFloorNumber}, {"Unique Slot Number", oldSlotNumber}}
+	newData:=bson.D{{"$set",bson.D{{"Floor Number", newFloorNumber}, {"Unique Slot Number", newSlotNumber},{"Occupancy", newOccupancyFlag}}},}
+	result, err := collection.UpdateMany(ctx,prevData,newData)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if result.ModifiedCount == 0{
+		fmt.Println("Data didn't Match to Update")
+	}
+	fmt.Printf("Parking Slot Details Updated Succesfully")
+
 
 }
 
+func GetFreeParkingSlots(){
+
+}
 func AddNewCarToSlot() {
 
 }
