@@ -92,7 +92,7 @@ func UpdateParkingSlot() {
 	fmt.Println("Enter Unique Slot Number")
 	fmt.Scan(&newSlotNumber)
 		for{
-			fmt.Println("Enter Occupancy As true or false Only")
+			fmt.Println("Enter Occupancy As true for Free or false for Occupied Only")
 			fmt.Scan(&newOccupancy)
 			if  newOccupancy == "true" ||  newOccupancy == "false"{
 				if newOccupancy == "true" {
@@ -128,19 +128,22 @@ func GetFreeParkingSlots(){
 	var ctx context.Context
 	client,ctx = ConnectDatabase()
 	collection := client.Database("CarParking").Collection("ParkingSlots")
-
-	cursor, err := collection.Find(ctx, bson.M{"Occupancy":true})
+	filter := bson.D{{"Occupancy",true}}
+	cursor, err := collection.Find(ctx, filter)
 	if err != nil {
-   		log.Fatal(err)
+		panic(err)
 	}
-	defer cursor.Close(ctx)
-	for cursor.Next(ctx) {
-   		var availableSlots bson.M
-    	if err = cursor.Decode(&availableSlots); err != nil {
-        	log.Fatal(err)
-    	}
-    	fmt.Println(availableSlots)
+	var result []bson.D
+
+	cursor.All(ctx, &result)
+	cursor.Decode(&result);
+	fmt.Println("Below are Free Parking Slots Available Now")
+	
+	
+	for _,item:=range result {   
+		fmt.Println("Floor No ",item[1].Value," and Slot Number ",item[2].Value," Free Now ")
 	}
+
 }
 func AddNewCarToSlot() {
 
