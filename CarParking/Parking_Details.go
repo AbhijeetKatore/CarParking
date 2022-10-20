@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+
 func AddParkingSlots() {
 	var floorNumber int8
 	var slotNumber int8
@@ -139,12 +140,79 @@ func GetFreeParkingSlots(){
 	cursor.Decode(&result);
 	fmt.Println("Below are Free Parking Slots Available Now")
 	
-	
 	for _,item:=range result {   
 		fmt.Println("Floor No",item[1].Value,"and Slot Number",item[2].Value,"is Free Now ")
 	}
 
 }
-func AddNewCarToSlot() {
+var carNumberV string
+var firstNameV string
+var lastNameV string
+var floorNumberV string
+var slotNumberV string
 
+func AddNewCarToSlot() {
+	 
+	// start := time.Now()
+	// fmt.Println(start.Hour(),":",start.Minute())
+
+	// fmt.Println("Enter User's First Name")
+	// fmt.Scan(&firstNameV)
+	// fmt.Println("Enter User's Last Name")
+	// fmt.Scan(&lastNameV)
+	fmt.Println("Enter Car Number to Add as Parked ")
+	fmt.Scan(&carNumberV)
+	// fmt.Println("Enter Floor Number to Block Parking Slot")
+	// fmt.Scan(&floorNumber)
+	// fmt.Println("Enter Slot Number to Block Parking Slot")
+	// fmt.Scan(&slotNumber)
+
+	//check user available in database
+
+	//check car number in databse
+	checkCarInDatabase()
+	//check slot available in database
+
+}
+
+func checkCarInDatabase(){
+	var client *mongo.Client 
+	var ctx context.Context
+	client,ctx = ConnectDatabase()
+	collection := client.Database("CarParking").Collection("CarDetails")
+	var result bson.M
+	err := collection.FindOne(ctx, bson.D{{"Car Number",carNumber}}).Decode(&result)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			fmt.Println("Car Number Not Found in Existing Database please add Car Details First or Enter a Correct One")
+		}
+		
+	}
+}
+
+
+func checkUserInDatabase(){
+	var client *mongo.Client 
+	var ctx context.Context
+	client,ctx = ConnectDatabase()
+	collection := client.Database("CarParking").Collection("Users")
+	var result bson.M
+	err := collection.FindOne(ctx, bson.D{{"First Name",firstNameV},{"Last Name",lastNameV}}).Decode(&result)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			fmt.Println("Users Name Not Found in Existing Database please add User Details First or Enter a Correct One")
+		}
+		
+	}
+
+}
+func checkParkingSlotInDatabase(){
+
+}
+
+func RemoveCarFromSlot(){
+	// var client *mongo.Client 
+	// var ctx context.Context
+	// client,ctx = ConnectDatabase()
+	// collection := client.Database("CarParking").Collection("ParkingSlots")
 }

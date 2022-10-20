@@ -15,7 +15,8 @@ func main(){
  Type 7 for Deleting Parking Slots
  Type 8 for Updating Parking Slots
  Type 9 for To Know Free Parking Slots
- Type 10 for Adding New Car to Slot along with Time In and Out
+ Type 10 for Adding New Car to Slot along with Time In
+ Type 11 or Removing Car from Slot along with Time Out
 
  `)
 
@@ -33,6 +34,7 @@ func main(){
  case 8: CarParking.UpdateParkingSlot()
  case 9: CarParking.GetFreeParkingSlots()
  case 10: CarParking.AddNewCarToSlot()
+ case 11: CarParking.RemoveCarFromSlot()
 
  default : fmt.Println("Selct proper input from the above list")
  }
