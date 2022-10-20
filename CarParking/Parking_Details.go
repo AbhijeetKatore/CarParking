@@ -135,11 +135,11 @@ func GetFreeParkingSlots(){
 	}
 	defer cursor.Close(ctx)
 	for cursor.Next(ctx) {
-   		var episode bson.M
-    	if err = cursor.Decode(&episode); err != nil {
+   		var availableSlots bson.M
+    	if err = cursor.Decode(&availableSlots); err != nil {
         	log.Fatal(err)
     	}
-    	fmt.Println(episode)
+    	fmt.Println(availableSlots)
 	}
 }
 func AddNewCarToSlot() {
