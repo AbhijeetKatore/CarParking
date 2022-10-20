@@ -141,7 +141,7 @@ func GetFreeParkingSlots(){
 	
 	
 	for _,item:=range result {   
-		fmt.Println("Floor No ",item[1].Value," and Slot Number ",item[2].Value," Free Now ")
+		fmt.Println("Floor No",item[1].Value,"and Slot Number",item[2].Value,"is Free Now ")
 	}
 
 }
