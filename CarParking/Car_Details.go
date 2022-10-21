@@ -23,8 +23,7 @@ func AddCarDetails(){
 	client,ctx = ConnectDatabase()
 	collection := client.Database("CarParking").Collection("CarDetails")
 	
-	data := bson.D{{"Car Number", carNumber}, {"Car Model Name", carModel}}
-
+	data := bson.D{{"Car Number", carNumber}, {"Car Model Name", carModel},}
 	_,err := collection.InsertOne(ctx, data)
 	if err != nil {
 		log.Fatal(err)

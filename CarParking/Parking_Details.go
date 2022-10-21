@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -156,9 +157,7 @@ var userFound bool
 var slotFound bool
 
 func AddNewCarToSlot() {
-	 
-	// start := time.Now()
-	// fmt.Println(start.Hour(),":",start.Minute())
+	
 	var client *mongo.Client 
 	var ctx context.Context
 	client,ctx = ConnectDatabase()
@@ -182,7 +181,7 @@ func AddNewCarToSlot() {
 
 	if userFound == true && carFound == true && slotFound == true{
 		prevData :=bson.D{{"Floor Number", floorNumberV}, {"Unique Slot Number", slotNumberV}}
-		newData:=bson.D{{"$set",bson.D{{"Floor Number", floorNumberV}, {"Unique Slot Number", slotNumberV},{"Occupancy", true},{"Car Number",carNumberV},{"First Name",firstNameV},{"Last Name",lastNameV},{"TimeIn",0}}},}
+		newData:=bson.D{{"$set",bson.D{{"Floor Number", floorNumberV}, {"Unique Slot Number", slotNumberV},{"Occupancy", true},{"Car Number",carNumberV},{"First Name",firstNameV},{"Last Name",lastNameV},{"TimeIn",time.Now()}}},}
 		result, err := collection.UpdateMany(ctx,prevData,newData)
 		if err != nil {
 			log.Fatal(err)
@@ -280,7 +279,7 @@ func RemoveCarFromSlot(){
 	collection := client.Database("CarParking").Collection("ParkingSlots")
 
 	prevData :=bson.D{{"Car Number",carNumber}}
-	newData:=bson.D{{"$set",bson.D{{"Occupancy", true},{"outTime",0}}},}
+	newData:=bson.D{{"$set",bson.D{{"Occupancy", true},{"outTime",time.Now()}}},}
 	result, err := collection.UpdateMany(ctx,prevData,newData)
 	if err != nil {
 		log.Fatal(err)
