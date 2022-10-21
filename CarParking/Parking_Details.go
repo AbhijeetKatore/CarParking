@@ -148,50 +148,61 @@ func GetFreeParkingSlots(){
 var carNumberV string
 var firstNameV string
 var lastNameV string
-var floorNumberV string
-var slotNumberV string
+var floorNumberV int8
+var slotNumberV int8
+var carFound bool
+var userFound bool
+var slotFound bool
 
 func AddNewCarToSlot() {
 	 
 	// start := time.Now()
 	// fmt.Println(start.Hour(),":",start.Minute())
 
-	// fmt.Println("Enter User's First Name")
-	// fmt.Scan(&firstNameV)
-	// fmt.Println("Enter User's Last Name")
-	// fmt.Scan(&lastNameV)
+	fmt.Println("Enter User's First Name")
+	fmt.Scan(&firstNameV)
+	fmt.Println("Enter User's Last Name")
+	fmt.Scan(&lastNameV)
+	userFound = checkUserInDatabase()
+
 	fmt.Println("Enter Car Number to Add as Parked ")
 	fmt.Scan(&carNumberV)
-	// fmt.Println("Enter Floor Number to Block Parking Slot")
-	// fmt.Scan(&floorNumber)
-	// fmt.Println("Enter Slot Number to Block Parking Slot")
-	// fmt.Scan(&slotNumber)
+	carFound = checkCarInDatabase()
 
-	//check user available in database
+	fmt.Println("Enter Floor Number to Block Parking Slot")
+	fmt.Scan(&floorNumberV)
+	fmt.Println("Enter Slot Number to Block Parking Slot")
+	fmt.Scan(&slotNumberV)
+	slotFound = checkParkingSlotInDatabase()
 
-	//check car number in databse
-	checkCarInDatabase()
-	//check slot available in database
+	if userFound == true && carFound == true && slotFound == true{
+		fmt.Println("Now Insert")
+	}
 
 }
 
-func checkCarInDatabase(){
+func checkCarInDatabase()(bool){
+	var found bool 
 	var client *mongo.Client 
 	var ctx context.Context
 	client,ctx = ConnectDatabase()
 	collection := client.Database("CarParking").Collection("CarDetails")
 	var result bson.M
-	err := collection.FindOne(ctx, bson.D{{"Car Number",carNumber}}).Decode(&result)
+	err := collection.FindOne(ctx, bson.D{{"Car Number",carNumberV}}).Decode(&result)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			fmt.Println("Car Number Not Found in Existing Database please add Car Details First or Enter a Correct One")
+			fmt.Println("Car Number Not Found in Existing Database please add Car Details First or Enter a Correct One",result)
 		}
 		
+	}else{
+		found = true
 	}
+	return found
 }
 
 
-func checkUserInDatabase(){
+func checkUserInDatabase()(bool){
+	var found bool
 	var client *mongo.Client 
 	var ctx context.Context
 	client,ctx = ConnectDatabase()
@@ -202,12 +213,45 @@ func checkUserInDatabase(){
 		if err == mongo.ErrNoDocuments {
 			fmt.Println("Users Name Not Found in Existing Database please add User Details First or Enter a Correct One")
 		}
-		
+	}else{
+		found = true
 	}
+	return found
 
 }
-func checkParkingSlotInDatabase(){
+func checkParkingSlotInDatabase()(bool){
+	var client *mongo.Client 
+	var ctx context.Context
+	var slotFound bool
+	var isFree bool 
+	var allTrue bool
 
+	client,ctx = ConnectDatabase()
+	collection := client.Database("CarParking").Collection("ParkingSlots")
+	var result bson.M
+	err := collection.FindOne(ctx, bson.D{{"Floor Number",floorNumberV},{"Unique Slot Number",slotNumberV}}).Decode(&result)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			fmt.Println("Car Slot Not Found in Existing Database please add Slot Details First or Enter a Correct One")
+		}
+	}else{
+		slotFound =true
+	}
+	result=nil
+	nerr := collection.FindOne(ctx, bson.D{{"Floor Number",floorNumberV},{"Unique Slot Number",slotNumberV},{"Occupancy",false}}).Decode(&result)
+	if nerr != nil {
+		if nerr == mongo.ErrNoDocuments {
+			fmt.Println("Car Slot is Occupied Now Please Enter a Different One")
+		}
+	}else{
+		isFree =true
+	}
+
+	if slotFound == true && isFree == true{
+		allTrue = true
+	}
+	return allTrue
+	
 }
 
 func RemoveCarFromSlot(){

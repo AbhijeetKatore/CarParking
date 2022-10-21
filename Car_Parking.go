@@ -5,6 +5,7 @@ import (
 	"fmt"
 )
 func main(){
+	for{
  fmt.Print(`
  Type 1 for Adding User
  Type 2 for Deleting User
@@ -38,5 +39,5 @@ func main(){
 
  default : fmt.Println("Selct proper input from the above list")
  }
- 
+}
 }
