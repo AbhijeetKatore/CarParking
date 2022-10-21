@@ -129,7 +129,7 @@ func GetFreeParkingSlots(){
 	var ctx context.Context
 	client,ctx = ConnectDatabase()
 	collection := client.Database("CarParking").Collection("ParkingSlots")
-	filter := bson.D{{"Occupancy",true}}
+	filter := bson.D{{"Occupancy",false}}
 	cursor, err := collection.Find(ctx, filter)
 	if err != nil {
 		panic(err)
@@ -182,7 +182,7 @@ func AddNewCarToSlot() {
 
 	if userFound == true && carFound == true && slotFound == true{
 		prevData :=bson.D{{"Floor Number", floorNumberV}, {"Unique Slot Number", slotNumberV}}
-		newData:=bson.D{{"$set",bson.D{{"Floor Number", floorNumberV}, {"Unique Slot Number", slotNumberV},{"Occupancy", true},{"Car Number",carNumberV},{"First Name",firstNameV},{"Last Name",lastNameV}}},}
+		newData:=bson.D{{"$set",bson.D{{"Floor Number", floorNumberV}, {"Unique Slot Number", slotNumberV},{"Occupancy", true},{"Car Number",carNumberV},{"First Name",firstNameV},{"Last Name",lastNameV},{"TimeIn",0}}},}
 		result, err := collection.UpdateMany(ctx,prevData,newData)
 		if err != nil {
 			log.Fatal(err)
@@ -261,16 +261,53 @@ func checkParkingSlotInDatabase()(bool){
 		isFree =true
 	}
 
-	if slotFound == true && isFree == true{
+	if slotFound == true && isFree == true {
 		allTrue = true
 	}
 	return allTrue
 	
 }
 
+
 func RemoveCarFromSlot(){
-	// var client *mongo.Client 
-	// var ctx context.Context
-	// client,ctx = ConnectDatabase()
-	// collection := client.Database("CarParking").Collection("ParkingSlots")
+
+	fmt.Println("Enter Car Number to Remove From Parking ")
+	fmt.Scan(&carNumber)
+
+	var client *mongo.Client 
+	var ctx context.Context
+	client,ctx = ConnectDatabase()
+	collection := client.Database("CarParking").Collection("ParkingSlots")
+
+	prevData :=bson.D{{"Car Number",carNumber}}
+	newData:=bson.D{{"$set",bson.D{{"Occupancy", true},{"outTime",0}}},}
+	result, err := collection.UpdateMany(ctx,prevData,newData)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if result.ModifiedCount == 0{
+		fmt.Println("Data didn't Match to Update",result)
+	}else{
+
+	filter := bson.D{{"Car Number",carNumber}}
+	cursor, err := collection.Find(ctx, filter)
+	if err != nil {
+		panic(err)
+	}
+
+	var results []bson.D
+	cursor.All(ctx, &results)
+	cursor.Decode(&results);
+	for _,item:=range results {   
+		data := bson.D{{"Floor Number", item[1].Value}, {"Unique Slot Number", item[2].Value},{"Occupancy", false}}
+		_, err := collection.InsertOne(ctx, data)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+	}
+	fmt.Printf("Parking Slot Details Updated Succesfully")
+	}
+
+
 }
