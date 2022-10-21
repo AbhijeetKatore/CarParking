@@ -145,6 +145,7 @@ func GetFreeParkingSlots(){
 	}
 
 }
+
 var carNumberV string
 var firstNameV string
 var lastNameV string
@@ -158,6 +159,10 @@ func AddNewCarToSlot() {
 	 
 	// start := time.Now()
 	// fmt.Println(start.Hour(),":",start.Minute())
+	var client *mongo.Client 
+	var ctx context.Context
+	client,ctx = ConnectDatabase()
+	collection := client.Database("CarParking").Collection("ParkingSlots") 
 
 	fmt.Println("Enter User's First Name")
 	fmt.Scan(&firstNameV)
@@ -176,7 +181,16 @@ func AddNewCarToSlot() {
 	slotFound = checkParkingSlotInDatabase()
 
 	if userFound == true && carFound == true && slotFound == true{
-		fmt.Println("Now Insert")
+		prevData :=bson.D{{"Floor Number", floorNumberV}, {"Unique Slot Number", slotNumberV}}
+		newData:=bson.D{{"$set",bson.D{{"Floor Number", floorNumberV}, {"Unique Slot Number", slotNumberV},{"Occupancy", true},{"Car Number",carNumberV},{"First Name",firstNameV},{"Last Name",lastNameV}}},}
+		result, err := collection.UpdateMany(ctx,prevData,newData)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if result.ModifiedCount == 0{
+			fmt.Println("Data didn't Match to Update")
+		}
+		fmt.Printf("Parking Slot Details Updated Succesfully")
 	}
 
 }
