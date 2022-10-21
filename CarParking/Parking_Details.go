@@ -279,7 +279,7 @@ func RemoveCarFromSlot(){
 	collection := client.Database("CarParking").Collection("ParkingSlots")
 
 	prevData :=bson.D{{"Car Number",carNumber}}
-	newData:=bson.D{{"$set",bson.D{{"Occupancy", true},{"outTime",time.Now()}}},}
+	newData:=bson.D{{"$set",bson.D{{"Occupancy", true},{"Time out",time.Now()}}},}
 	result, err := collection.UpdateMany(ctx,prevData,newData)
 	if err != nil {
 		log.Fatal(err)
