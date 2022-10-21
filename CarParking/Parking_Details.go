@@ -250,6 +250,7 @@ func checkParkingSlotInDatabase()(bool){
 	}else{
 		slotFound =true
 	}
+
 	result=nil
 	nerr := collection.FindOne(ctx, bson.D{{"Floor Number",floorNumberV},{"Unique Slot Number",slotNumberV},{"Occupancy",false}}).Decode(&result)
 	if nerr != nil {
@@ -260,6 +261,8 @@ func checkParkingSlotInDatabase()(bool){
 		isFree =true
 	}
 
+
+	
 	if slotFound == true && isFree == true {
 		allTrue = true
 	}
