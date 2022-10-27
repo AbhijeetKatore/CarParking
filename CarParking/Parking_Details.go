@@ -142,7 +142,7 @@ func GetFreeParkingSlots(){
 	fmt.Println("Below are Free Parking Slots Available Now")
 	
 	for _,item:=range result {   
-		fmt.Println("Floor No",item[1].Value,"and Slot Number",item[2].Value,"is Free Now ")
+		fmt.Println("On Floor No",item[1].Value," Slot Number",item[2].Value,"is Free Now ")
 	}
 
 }
@@ -241,6 +241,8 @@ func checkParkingSlotInDatabase()(bool){
 
 	client,ctx = ConnectDatabase()
 	collection := client.Database("CarParking").Collection("ParkingSlots")
+
+
 	var result bson.M
 	err := collection.FindOne(ctx, bson.D{{"Floor Number",floorNumberV},{"Unique Slot Number",slotNumberV}}).Decode(&result)
 	if err != nil {
@@ -251,14 +253,17 @@ func checkParkingSlotInDatabase()(bool){
 		slotFound =true
 	}
 
-	result=nil
-	nerr := collection.FindOne(ctx, bson.D{{"Floor Number",floorNumberV},{"Unique Slot Number",slotNumberV},{"Occupancy",false}}).Decode(&result)
-	if nerr != nil {
-		if nerr == mongo.ErrNoDocuments {
-			fmt.Println("Car Slot is Occupied Now Please Enter a Different One")
+	if slotFound==true{
+
+		result=nil
+		nerr := collection.FindOne(ctx, bson.D{{"Floor Number",floorNumberV},{"Unique Slot Number",slotNumberV},{"Occupancy",false}}).Decode(&result)
+		if nerr != nil {
+			if nerr == mongo.ErrNoDocuments {
+				fmt.Println("Car Slot is Occupied Now Please Enter a Different One")
+			}
+		}else{
+			isFree =true
 		}
-	}else{
-		isFree =true
 	}
 
 
