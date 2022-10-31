@@ -29,9 +29,9 @@ func AddUser() {
 	_, err := collection.InsertOne(ctx, data)
 	if err != nil {
 		log.Fatal(err)
-	}
+	}else {
 	fmt.Printf("User Details Inserted Successfully")
-
+	}
 }
 func Deleteuser() {
 	fmt.Println("Enter Exact Details of User that you want to Delete  ")

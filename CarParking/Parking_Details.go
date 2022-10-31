@@ -43,9 +43,9 @@ func AddParkingSlots() {
 	_, err := collection.InsertOne(ctx, data)
 	if err != nil {
 		log.Fatal(err)
-	}
+	}else{
 	fmt.Printf("Parking Slot Details Inserted Successfully")
-
+	}
 
 }
 
@@ -119,9 +119,9 @@ func UpdateParkingSlot() {
 	}
 	if result.ModifiedCount == 0{
 		fmt.Println("Data didn't Match to Update")
-	}
+	}else{
 	fmt.Printf("Parking Slot Details Updated Succesfully")
-
+	}
 
 }
 
@@ -188,8 +188,9 @@ func AddNewCarToSlot() {
 		}
 		if result.ModifiedCount == 0{
 			fmt.Println("Data didn't Match to Update")
-		}
+		}else{
 		fmt.Printf("Parking Slot Details Updated Succesfully")
+		}
 	}
 
 }
@@ -314,6 +315,7 @@ func RemoveCarFromSlot(){
 
 	}
 	fmt.Printf("Parking Slot Details Updated Succesfully")
+	
 	}
 
 

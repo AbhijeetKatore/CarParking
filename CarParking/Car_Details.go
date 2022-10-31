@@ -87,7 +87,8 @@ func UpdateCarDetails(){
 	}
 	if result.ModifiedCount == 0{
 		fmt.Println("Data didn't Match to Update")
-	}
+	}else{
 	fmt.Printf("New Car Details Updated Succesfully")
+	}
 
 }
